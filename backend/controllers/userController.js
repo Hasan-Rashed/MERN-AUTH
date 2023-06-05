@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 
-// @desc    Auth user/set token
+// @desc    Auth user/set token / login user
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
