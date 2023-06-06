@@ -2,11 +2,29 @@ import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
 
-// @desc    Auth user/set token / login user
+// @desc    Auth user/set token / or login user
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: 'User Authenticated' });
+    // get email and password from the body
+    const { email, password } = req.body;
+
+    // find user by email in the database
+    const user = await User.findOne({ email });
+
+    // check if user exists. we are checking passwords in the User model.
+    if(user) {
+        generateToken(res, user._id); // set cookie with response.cookie in the browser with the token and the name is 'jwt'. res and user._id goes to generateToken.js
+
+        res.status(201).json({ // 201 means something was created
+            _id: user._id,
+            name: user.name,
+            email: user.email
+        })
+    }else{
+        res.status(401); // 401 means unauthorized
+        throw new Error('Invalid email or password');
+    }
 });
 
 // @desc    Register a new user
