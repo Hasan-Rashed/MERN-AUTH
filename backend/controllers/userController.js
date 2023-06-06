@@ -13,7 +13,7 @@ const authUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     // check if user exists. we are checking passwords in the User model.
-    if(user) {
+    if(user && (await user.matchPassword(password))) { // matchPassword is a custom method associated with userSchema in userModel.js. password is the plain text password. it return true or false
         generateToken(res, user._id); // set cookie with response.cookie in the browser with the token and the name is 'jwt'. res and user._id goes to generateToken.js
 
         res.status(201).json({ // 201 means something was created
