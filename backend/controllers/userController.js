@@ -84,6 +84,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => { // we can access the user by req.user because of the protect middleware
+    // console.log(req.user);
 // req.user is only available to the protected routes, in this case getUserProfile and updateUserProfile
     const user = {
         _id: req.user._id, // req.user is the current user with userId. userId is there because, we generate token in function with userId as 'payload'
@@ -98,7 +99,36 @@ const getUserProfile = asyncHandler(async (req, res) => { // we can access the u
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: 'update user profile' });
+    // console.log(req.user);
+    // req.user is only available to the protected routes, in this case getUserProfile and updateUserProfile
+
+    const user = await User.findById(req.user._id); // we can access the req.user._id because of the protect middleware
+
+    // check if user exists
+    if(user) {
+        // update user name and email
+        user.name = req.body.name || user.name; // if req.body.name is empty, then use user.name
+        user.email = req.body.email || user.email; // if req.body.email is empty, then use user.email
+
+        // check if password is provided
+        if(req.body.password){
+            user.password = req.body.password; // set new password. password is hashed in the userModel.js. we cannot use req.user because it doesn't have a password field.
+        }
+
+        // save user with updated name, email and password
+        const updatedUser = await user.save();
+
+        res.status(200).json({ // 200 means ok
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email
+        })
+    }else{
+        res.status(404); // 404 means not found
+        throw new Error('User not found');
+    }
+
+    res.json({ message: 'Update user profile' });
 });
 
 
