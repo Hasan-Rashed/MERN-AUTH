@@ -83,8 +83,15 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
-const getUserProfile = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: 'User profile' });
+const getUserProfile = asyncHandler(async (req, res) => { // we can access the user by req.user because of the protect middleware
+// req.user is only available to the protected routes, in this case getUserProfile and updateUserProfile
+    const user = {
+        _id: req.user._id, // req.user is the current user with userId. userId is there because, we generate token in function with userId as 'payload'
+        name: req.user.name, 
+        email: req.user.email
+    }
+    
+    res.status(200).json(user); // 200 means ok
 });
 
 // @desc    Update user profile
