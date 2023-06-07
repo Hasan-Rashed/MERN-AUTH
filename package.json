@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node backend/server.js",
-    "server": "nodemon backend/server.js"
+    "server": "nodemon backend/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "Hasan Rashed",
@@ -21,6 +23,7 @@
     "mongoose": "^7.2.2"
   },
   "devDependencies": {
+    "concurrently": "^8.1.0",
     "nodemon": "^2.0.22"
   }
 }
