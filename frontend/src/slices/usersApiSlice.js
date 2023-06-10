@@ -7,7 +7,15 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             query: (data) => ({ // data is our email and password for login
                 url: `${USERS_URL}/auth`,
                 method: "POST",
-                body: data
+                body: data // data is the name, email, and password
+            }),
+        }),
+
+        register: builder.mutation({
+            query: (data) => ({ // data is our email and password for login
+                url: `${USERS_URL}`,
+                method: "POST",
+                body: data // data is the name, email, and password
             }),
         }),
 
@@ -22,4 +30,4 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
 
 // there are conventions for naming the hooks. if it is mutation it will useNameMutation, if it is query it will be useNameQuery
-export const { useLoginMutation, useLogoutMutation } = usersApiSlice;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = usersApiSlice;
