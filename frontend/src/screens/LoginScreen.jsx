@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from "../components/FormContainer";
 import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from 'react-toastify';
 
 
 const LoginScreen = () => {
@@ -40,8 +41,9 @@ POST request to the server to log in the user with the provided email and passwo
             dispatch(setCredentials({...res})) // ...res is the spread operator which will spread the res data into the object. setting user data to local storage into our state.
             navigate('/');
         } catch (err) {
-            console.log(err?.data?.message || err.error);
-            alert(err?.data?.message || err.error); // ? after err is optional chaining. if err.data is not there then it will not throw error.
+            // console.log(err?.data?.message || err.error);
+            // alert(err?.data?.message || err.error); // ? after err is optional chaining. if err.data is not there then it will not throw error.
+            toast.error(err?.data?.message || err.error);
         }
     }
     
