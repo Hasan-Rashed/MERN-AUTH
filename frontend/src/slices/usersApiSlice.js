@@ -10,8 +10,16 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 body: data
             }),
         }),
+
+        logout: builder.mutation({ // logout is a mutation because it is changing the state of the server
+            query: () => ({
+                url: `${USERS_URL}/logout`,
+                method: 'POST'
+            })
+        })
     })
 })
 
 
-export const { useLoginMutation } = usersApiSlice;
+// there are conventions for naming the hooks. if it is mutation it will useNameMutation, if it is query it will be useNameQuery
+export const { useLoginMutation, useLogoutMutation } = usersApiSlice;
