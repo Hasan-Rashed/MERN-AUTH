@@ -19,8 +19,16 @@ const ProfileScreen = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    // checking state has changed or not
+    console.table([name, email, password, confirmPassword])
+
+
     // get the user data or the `userInfo` state from the Redux store. if userInfo is not null, then the user is already logged in and we can redirect them to the home page.
     const { userInfo } = useSelector((state) => state.auth); // auth is the part of our state we want, auth is the  slice. it consists userInfo.
+
+
+    // checking state has changed or not after getting data from redux store
+    console.table([name, email, password, confirmPassword])
     
     useEffect(() => {
         setName(userInfo.name); // userInfo is the user data we get from the server after logging in the user. we can use the response to get the user data and save it in the Redux store.
