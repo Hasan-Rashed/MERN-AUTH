@@ -6,6 +6,7 @@ import FormContainer from "../components/FormContainer";
 import { toast } from 'react-toastify';
 import Loader from "../components/Loader";
 import { setCredentials } from "../slices/authSlice";
+import { useUpdateUserMutation } from '../slices/usersApiSlice'
 
 
 
@@ -27,6 +28,9 @@ const ProfileScreen = () => {
     const { userInfo } = useSelector((state) => state.auth); // auth is the part of our state we want, auth is the  slice. it consists userInfo.
 
 
+    const [updateProfile, { isLoading }] = useUpdateUserMutation(); // updateProfile is the function that will be used to make the POST request to the server to update the user profile. isLoading is a boolean that will be true when the request is being made and false when the request is complete.
+
+
     // checking state has changed or not after getting data from redux store
     console.table([name, email, password, confirmPassword])
     
@@ -43,7 +47,20 @@ const ProfileScreen = () => {
         if(password !== confirmPassword) {
             toast.error('Passwords does not match');
         }else{
-            console.log('submit');
+            try {
+                const res = await updateProfile({
+                    _id: userInfo._id, // userInfo is the user data we get from the server after logging in the user.
+                    name, // name is the local state we have created above
+                    email, // name is the local state we have created above
+                    password // name is the local state we have created above
+                }).unwrap(); 
+
+                dispatch(setCredentials({...res})); // dispatch the action to save the user data in the Redux store.
+                toast.success('Profile Updated Successfully');
+                
+            } catch (err) {
+                toast.error(err?.data?.message || err.error)
+            }
         }
     }
     
@@ -95,6 +112,8 @@ const ProfileScreen = () => {
                 >
                 </Form.Control>
             </Form.Group>
+
+            {isLoading && <Loader />}
 
             <Button type='submit' variant='primary' className="mt-3" >
                 Update
