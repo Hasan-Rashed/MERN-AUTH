@@ -1,3 +1,4 @@
+import path from 'path';
 import express  from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -18,7 +19,21 @@ app.use(cookieParser()); // to accept cookies in the browser
 
 app.use('/api/users', userRoutes);
 
-app.get('/', (req, res) => res.send('server is ready'));
+// setting for production
+// check if node environment is in production mode
+if(process.env.NODE_ENV === 'production') {
+    const __dirname = path.resolve(); // get current directory name
+
+    // making dist folder as static 
+    app.use(express.static(path.join(__dirname, '/frontend/dist'))); // set static folder
+
+    // any route that we hit which is not api/users is going to load this index.html file
+    app.use('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html')));
+}
+// if in development mode
+else{
+    app.get('/', (req, res) => res.send('server is ready'));
+}
 
 app.use(notFound); // not found middleware
 app.use(errorHandler); // error handler middleware / custom error handler
